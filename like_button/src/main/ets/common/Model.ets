@@ -1,13 +1,13 @@
-export  class BubblesColor {
-  private _dotPrimaryColor: ResourceColor ;
-  private _dotSecondaryColor: ResourceColor ;
-  private _dotThirdColor: ResourceColor ;
-  private _dotLastColor: ResourceColor ;
+export class BubblesColor {
+  private _dotPrimaryColor: ResourceColor;
+  private _dotSecondaryColor: ResourceColor;
+  private _dotThirdColor: ResourceColor;
+  private _dotLastColor: ResourceColor;
 
   constructor(value: {
-    dotPrimaryColor: ResourceColor ,
-    dotSecondaryColor: ResourceColor ,
-    dotThirdColor?: ResourceColor ,
+    dotPrimaryColor: ResourceColor,
+    dotSecondaryColor: ResourceColor,
+    dotThirdColor?: ResourceColor,
     dotLastColor?: ResourceColor
   }) {
     this._dotPrimaryColor = value.dotPrimaryColor;
@@ -27,40 +27,40 @@ export  class BubblesColor {
     }
   }
 
-  get dotPrimaryColor(): ResourceColor  {
+  dotPrimaryColor(): ResourceColor {
     return this._dotPrimaryColor;
   }
 
-  get dotSecondaryColor(): ResourceColor  {
+  dotSecondaryColor(): ResourceColor {
     return this._dotSecondaryColor;
   }
 
-  get dotThirdColor(): ResourceColor  {
+  dotThirdColor(): ResourceColor {
     return this._dotThirdColor;
   }
 
-  get dotLastColor(): ResourceColor  {
+  dotLastColor(): ResourceColor {
     return this._dotLastColor;
   }
 }
 
 export class CircleColor {
-  private _start: ResourceColor ;
-  private _end: ResourceColor ;
+  private _start: ResourceColor;
+  private _end: ResourceColor;
 
   constructor(value: {
-    start: ResourceColor ,
+    start: ResourceColor,
     end: ResourceColor
   }) {
     this._start = value.start;
     this._end = value.end;
   }
 
-  get start(): ResourceColor  {
+  start(): ResourceColor {
     return this._start;
   }
 
-  get end(): ResourceColor  {
+  end(): ResourceColor {
     return this._end;
   }
 }

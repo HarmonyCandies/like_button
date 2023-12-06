@@ -30,10 +30,10 @@ export struct BubblesPainter {
   aboutToAppear() {
     this._outerBubblesPositionAngle = 360 / this.bubblesCount;
     this._circlePaintColors.push(...[
-      this.bubblesColor.dotPrimaryColor as string,
-      this.bubblesColor.dotSecondaryColor as string,
-      this.bubblesColor.dotThirdColor as string,
-      this.bubblesColor.dotLastColor as string,],
+      this.bubblesColor.dotPrimaryColor() as string,
+      this.bubblesColor.dotSecondaryColor()  as string,
+      this.bubblesColor.dotThirdColor()  as string,
+      this.bubblesColor.dotLastColor()  as string,],
     );
     this.init();
   }
@@ -111,17 +111,17 @@ export struct BubblesPainter {
       mapValueFromRangeToRange(this.currentProgress, 0.0, 0.5, 0.0, 1.0);
 
 
-      this._circlePaintColors[0] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor,), Color.fromResourceColor(this.bubblesColor.dotSecondaryColor), progress)
+      this._circlePaintColors[0] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor() ,), Color.fromResourceColor(this.bubblesColor.dotSecondaryColor() ), progress)
         .withAlpha(alpha)
         .toString();
 
-      this._circlePaintColors[1] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor,), Color.fromResourceColor(this.bubblesColor.dotThirdColor), progress)
+      this._circlePaintColors[1] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor() ,), Color.fromResourceColor(this.bubblesColor.dotThirdColor() ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[2] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotThirdColor,), Color.fromResourceColor(this.bubblesColor.dotLastColor), progress)
+      this._circlePaintColors[2] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotThirdColor() ,), Color.fromResourceColor(this.bubblesColor.dotLastColor() ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[3] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotLastColor,), Color.fromResourceColor(this.bubblesColor.dotPrimaryColor), progress)
+      this._circlePaintColors[3] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotLastColor() ,), Color.fromResourceColor(this.bubblesColor.dotPrimaryColor() ), progress)
         .withAlpha(alpha)
         .toString();
     }
@@ -129,16 +129,16 @@ export struct BubblesPainter {
     else {
       let progress =
       mapValueFromRangeToRange(this.currentProgress, 0.5, 1.0, 0.0, 1.0);
-      this._circlePaintColors[0] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor,), Color.fromResourceColor(this.bubblesColor.dotThirdColor), progress)
+      this._circlePaintColors[0] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor() ,), Color.fromResourceColor(this.bubblesColor.dotThirdColor() ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[1] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotThirdColor,), Color.fromResourceColor(this.bubblesColor.dotLastColor), progress)
+      this._circlePaintColors[1] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotThirdColor(),), Color.fromResourceColor(this.bubblesColor.dotLastColor() ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[2] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotLastColor,), Color.fromResourceColor(this.bubblesColor.dotPrimaryColor), progress)
+      this._circlePaintColors[2] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotLastColor() ,), Color.fromResourceColor(this.bubblesColor.dotPrimaryColor() ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[3] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor,), Color.fromResourceColor(this.bubblesColor.dotSecondaryColor), progress)
+      this._circlePaintColors[3] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor() ,), Color.fromResourceColor(this.bubblesColor.dotSecondaryColor() ), progress)
         .withAlpha(alpha)
         .toString();
 
