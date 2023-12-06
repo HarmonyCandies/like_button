@@ -1,67 +1,32 @@
 export class BubblesColor {
-  private _dotPrimaryColor: ResourceColor;
-  private _dotSecondaryColor: ResourceColor;
-  private _dotThirdColor: ResourceColor;
-  private _dotLastColor: ResourceColor;
-
   constructor(value: {
     dotPrimaryColor: ResourceColor,
     dotSecondaryColor: ResourceColor,
     dotThirdColor?: ResourceColor,
-    dotLastColor?: ResourceColor
+    dotLastColor?: ResourceColor,
   }) {
-    this._dotPrimaryColor = value.dotPrimaryColor;
-    this._dotSecondaryColor = value.dotSecondaryColor;
-    if (value.dotThirdColor == undefined) {
-      this._dotThirdColor = value.dotPrimaryColor;
-    }
-    else {
-      this._dotThirdColor = value.dotThirdColor;
-    }
-
-    if (value.dotLastColor == undefined) {
-      this._dotLastColor = value.dotSecondaryColor;
-    }
-    else {
-      this._dotLastColor = value.dotLastColor;
-    }
+    this.dotPrimaryColor = value.dotPrimaryColor;
+    this.dotSecondaryColor = value.dotSecondaryColor;
+    this.dotThirdColor = value.dotThirdColor == undefined ? value.dotPrimaryColor : value.dotThirdColor;
+    this.dotLastColor = value.dotLastColor == undefined ? value.dotSecondaryColor : value.dotLastColor;
   }
 
-  dotPrimaryColor(): ResourceColor {
-    return this._dotPrimaryColor;
-  }
-
-  dotSecondaryColor(): ResourceColor {
-    return this._dotSecondaryColor;
-  }
-
-  dotThirdColor(): ResourceColor {
-    return this._dotThirdColor;
-  }
-
-  dotLastColor(): ResourceColor {
-    return this._dotLastColor;
-  }
+  dotPrimaryColor: ResourceColor;
+  dotSecondaryColor: ResourceColor;
+  dotThirdColor: ResourceColor;
+  dotLastColor: ResourceColor;
 }
 
 export class CircleColor {
-  private _start: ResourceColor;
-  private _end: ResourceColor;
-
   constructor(value: {
     start: ResourceColor,
-    end: ResourceColor
+    end: ResourceColor,
   }) {
-    this._start = value.start;
-    this._end = value.end;
+    this.start = value.start;
+    this.end = value.end;
   }
 
-  start(): ResourceColor {
-    return this._start;
-  }
-
-  end(): ResourceColor {
-    return this._end;
-  }
+  start: ResourceColor;
+  end: ResourceColor;
 }
 

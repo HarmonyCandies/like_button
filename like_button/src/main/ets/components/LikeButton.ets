@@ -17,7 +17,7 @@ export struct LikeButton {
   @Builder
   buildLikeComponent() {
     Image($r('app.media.favorite'))
-      .fillColor(this.controller.isLiked ? Color.Pink : Color.Gray)
+    .fillColor(this.controller.isLiked ? Color.Pink : Color.Gray)
   }
 
   aboutToAppear() {
@@ -38,13 +38,19 @@ export struct LikeButton {
   }
 
   build() {
-    Stack({ alignContent: Alignment.Center }) {
+    Stack({
+      // api9 Alignment.center, not work well
+      alignContent: Alignment.TopStart
+    }) {
       BubblesPainter(
         { bubblesSize: this.controller.bubblesSize,
           bubblesColor: this.controller.bubblesColor,
           currentProgress: this.controller.bubblesProgress,
         }
-      )
+      ).position({
+        x: -(this.controller.bubblesSize - this.controller.likeComponentSize) / 2.0,
+        y: -(this.controller.bubblesSize - this.controller.likeComponentSize) / 2.0,
+      })
       CirclePainter(
         {
           circleColor: this.controller.circleColor,
@@ -52,7 +58,10 @@ export struct LikeButton {
           innerCircleRadiusProgress: this.controller.innerCircleRadiusProgress,
           outerCircleRadiusProgress: this.controller.outerCircleRadiusProgress,
         }
-      )
+      ).position({
+        x: -(this.controller.circleSize - this.controller.likeComponentSize) / 2.0,
+        y: -(this.controller.circleSize - this.controller.likeComponentSize) / 2.0,
+      })
       Column() {
         this.likeComponentBuilder()
       }.scale({

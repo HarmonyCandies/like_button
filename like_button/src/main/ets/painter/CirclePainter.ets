@@ -29,7 +29,7 @@ export struct CirclePainter {
     }
     let colorProgress = clamp(this.outerCircleRadiusProgress, 0.5, 1.0);
     colorProgress = mapValueFromRangeToRange(colorProgress, 0.5, 1.0, 0.0, 1.0);
-    this.context.fillStyle = Color.lerp(Color.fromResourceColor(this.circleColor.start() ), Color.fromResourceColor(this.circleColor.end() ), colorProgress)
+    this.context.fillStyle = Color.lerp(Color.fromResourceColor(this.circleColor.start), Color.fromResourceColor(this.circleColor.end), colorProgress)
       .toString();
     let center = this.circleSize * 0.5;
     // let strokeWidth = this.outerCircleRadiusProgress * center -

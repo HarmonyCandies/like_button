@@ -8,7 +8,7 @@ struct Index {
 
   aboutToAppear() {
     // this.controller.likeComponentSize = 150;
-    // this.controller.animationDuration=1000;
+    // this.controller.animationDuration=5000;
   }
 
   build() {
@@ -21,8 +21,23 @@ struct Index {
             }
           )
         }
+        GridItem() {
+          LikeButton(
+            {
+              controller: this.controller
+            }
+          )
+        }
+        GridItem() {
+          LikeButton(
+            {
+              controller: this.controller
+            }
+          )
+        }
       }
       .columnsTemplate('1fr 1fr 1fr')
+      .rowsTemplate('1fr 1fr 1fr')
       .columnsGap(10)
       .rowsGap(10)
       .width('100%')
