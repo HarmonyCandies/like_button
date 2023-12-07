@@ -1,11 +1,12 @@
 import { clamp, degToRad, mapValueFromRangeToRange } from '../common/LikeButtonUtils';
 import { BubblesColor } from '../common/Model';
-import { Color } from '../common/Color';
+import { DartColor } from '../common/Color';
 
 @Component
 export struct BubblesPainter {
   @Prop @Watch('onCurrentProgressChanged') currentProgress: number;
-  @Prop bubblesColor: BubblesColor;
+  @Prop  bubblesColor: BubblesColor;
+
   @Prop bubblesSize: number;
   bubblesCount: number = 7;
   private settings: RenderingContextSettings = new RenderingContextSettings(true)
@@ -111,17 +112,17 @@ export struct BubblesPainter {
       mapValueFromRangeToRange(this.currentProgress, 0.0, 0.5, 0.0, 1.0);
 
 
-      this._circlePaintColors[0] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), Color.fromResourceColor(this.bubblesColor.dotSecondaryColor ), progress)
+      this._circlePaintColors[0] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotSecondaryColor ), progress)
         .withAlpha(alpha)
         .toString();
 
-      this._circlePaintColors[1] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), Color.fromResourceColor(this.bubblesColor.dotThirdColor ), progress)
+      this._circlePaintColors[1] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[2] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotThirdColor ,), Color.fromResourceColor(this.bubblesColor.dotLastColor ), progress)
+      this._circlePaintColors[2] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ,), DartColor.fromResourceColor(this.bubblesColor.dotLastColor ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[3] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotLastColor ,), Color.fromResourceColor(this.bubblesColor.dotPrimaryColor ), progress)
+      this._circlePaintColors[3] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotLastColor ,), DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ), progress)
         .withAlpha(alpha)
         .toString();
     }
@@ -129,16 +130,16 @@ export struct BubblesPainter {
     else {
       let progress =
       mapValueFromRangeToRange(this.currentProgress, 0.5, 1.0, 0.0, 1.0);
-      this._circlePaintColors[0] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), Color.fromResourceColor(this.bubblesColor.dotThirdColor ), progress)
+      this._circlePaintColors[0] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[1] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotThirdColor,), Color.fromResourceColor(this.bubblesColor.dotLastColor ), progress)
+      this._circlePaintColors[1] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotThirdColor,), DartColor.fromResourceColor(this.bubblesColor.dotLastColor ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[2] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotLastColor ,), Color.fromResourceColor(this.bubblesColor.dotPrimaryColor ), progress)
+      this._circlePaintColors[2] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotLastColor ,), DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ), progress)
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[3] = Color.lerp(Color.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), Color.fromResourceColor(this.bubblesColor.dotSecondaryColor ), progress)
+      this._circlePaintColors[3] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotSecondaryColor ), progress)
         .withAlpha(alpha)
         .toString();
 

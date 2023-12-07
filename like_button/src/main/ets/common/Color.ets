@@ -1,33 +1,33 @@
 /// convert from dart Color
 
-export class Color {
+export class DartColor {
   readonly value: number;
 
   constructor(value: number) {
-   //  this.value = value & 0xFFFFFFFF;
+    //  this.value = value & 0xFFFFFFFF;
     // 强制转换为无符号32位整数
-    this.value= value >>> 0;
+    this.value = value >>> 0;
 
   }
 
-  static fromARGB(a: number, r: number, g: number, b: number): Color {
+  static fromARGB(a: number, r: number, g: number, b: number): DartColor {
     let value =
       ((a & 0xff) << 24) |
         ((r & 0xff) << 16) |
         ((g & 0xff) << 8) |
         (b & 0xff);
 
-    return new Color(value);
+    return new DartColor(value);
   }
 
-  static fromRGBO(r: number, g: number, b: number, opacity: number): Color {
+  static fromRGBO(r: number, g: number, b: number, opacity: number): DartColor {
     const value =
       (((Math.round(opacity * 0xff) & 0xff) << 24) |
         (r & 0xff) << 16) |
         ((g & 0xff) << 8) |
         (b & 0xff);
 
-    return new Color(value);
+    return new DartColor(value);
   }
 
   get alpha(): number {
@@ -50,27 +50,27 @@ export class Color {
     return (0x000000ff & this.value);
   }
 
-  withAlpha(a: number): Color {
-    return Color.fromARGB(a, this.red, this.green, this.blue);
+  withAlpha(a: number): DartColor {
+    return DartColor.fromARGB(a, this.red, this.green, this.blue);
   }
 
-  withOpacity(opacity: number): Color {
+  withOpacity(opacity: number): DartColor {
     if (opacity < 0.0 || opacity > 1.0) {
       throw new Error('Opacity must be between 0.0 and 1.0');
     }
     return this.withAlpha(Math.round(opacity * 255));
   }
 
-  withRed(r: number): Color {
-    return Color.fromARGB(this.alpha, r, this.green, this.blue);
+  withRed(r: number): DartColor {
+    return DartColor.fromARGB(this.alpha, r, this.green, this.blue);
   }
 
-  withGreen(g: number): Color {
-    return Color.fromARGB(this.alpha, this.red, g, this.blue);
+  withGreen(g: number): DartColor {
+    return DartColor.fromARGB(this.alpha, this.red, g, this.blue);
   }
 
-  withBlue(b: number): Color {
-    return Color.fromARGB(this.alpha, this.red, this.green, b);
+  withBlue(b: number): DartColor {
+    return DartColor.fromARGB(this.alpha, this.red, this.green, b);
   }
 
   computeLuminance(): number {
@@ -88,7 +88,7 @@ export class Color {
     return 0.2126 * R + 0.7152 * G + 0.0722 * B;
   }
 
-  static lerp(a: Color | null, b: Color | null, t: number): Color | null {
+  static lerp(a: DartColor | null, b: DartColor | null, t: number): DartColor | null {
     if (t < 0) {
       t = 0;
     } else if (t > 1) {
@@ -105,12 +105,12 @@ export class Color {
       if (a === null) {
         return b.withAlpha(Math.round(t * b.alpha));
       } else {
-        const alpha = Math.round(Color._lerpInt(a.alpha, b.alpha, t));
-        const red = Color._lerpInt(a.red, b.red, t);
-        const green = Color._lerpInt(a.green, b.green, t);
-        const blue = Color._lerpInt(a.blue, b.blue, t);
+        const alpha = Math.round(DartColor._lerpInt(a.alpha, b.alpha, t));
+        const red = DartColor._lerpInt(a.red, b.red, t);
+        const green = DartColor._lerpInt(a.green, b.green, t);
+        const blue = DartColor._lerpInt(a.blue, b.blue, t);
 
-        return Color.fromARGB(alpha, red, green, blue);
+        return DartColor.fromARGB(alpha, red, green, blue);
       }
     }
   }
@@ -119,11 +119,11 @@ export class Color {
     return a + (b - a) * t;
   }
 
-  private static _scaleAlpha(color: Color, factor: number): Color {
+  private static _scaleAlpha(color: DartColor, factor: number): DartColor {
     return color.withAlpha(Math.round(color.alpha * factor));
   }
 
-  static alphaBlend(foreground: Color, background: Color): Color {
+  static alphaBlend(foreground: DartColor, background: DartColor): DartColor {
     const alpha = foreground.alpha;
     if (alpha === 0x00) {
       return background;
@@ -133,7 +133,7 @@ export class Color {
     let backAlpha = background.alpha;
 
     if (backAlpha === 0xff) {
-      return Color.fromARGB(
+      return DartColor.fromARGB(
         0xff,
         Math.round((alpha * foreground.red + invAlpha * background.red) / 0xff),
         Math.round((alpha * foreground.green + invAlpha * background.green) / 0xff),
@@ -142,7 +142,7 @@ export class Color {
     } else {
       backAlpha = (backAlpha * invAlpha) / 0xff;
       const outAlpha = alpha + backAlpha;
-      return Color.fromARGB(
+      return DartColor.fromARGB(
         outAlpha,
         Math.round((foreground.red * alpha + background.red * backAlpha) / outAlpha),
         Math.round((foreground.green * alpha + background.green * backAlpha) / outAlpha),
@@ -151,7 +151,7 @@ export class Color {
     }
   }
 
-  static fromString(colorString: string): Color {
+  static fromString(colorString: string): DartColor {
 
     let hexValue: string = colorString;
 
@@ -168,11 +168,14 @@ export class Color {
     }
 
     const parsedValue: number = parseInt(hexValue, 16);
-    return new Color(parsedValue);
+    return new DartColor(parsedValue);
   }
 
-  static fromResourceColor(color: ResourceColor): Color {
-    return Color.fromString(color as string);
+  static fromResourceColor(color: ResourceColor | DartColor): DartColor {
+    if (color instanceof DartColor) {
+      return color;
+    }
+    return DartColor.fromString(color as string);
   }
 
   toString(): string {

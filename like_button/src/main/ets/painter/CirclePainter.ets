@@ -1,7 +1,7 @@
 import { clamp, mapValueFromRangeToRange } from '../common/LikeButtonUtils';
 import { CircleColor } from '../common/Model';
 import { CustomPainter } from './CustomPainter'
-import { Color } from '../common/Color';
+import { DartColor } from '../common/Color';
 
 @Component
 export struct CirclePainter {
@@ -29,7 +29,7 @@ export struct CirclePainter {
     }
     let colorProgress = clamp(this.outerCircleRadiusProgress, 0.5, 1.0);
     colorProgress = mapValueFromRangeToRange(colorProgress, 0.5, 1.0, 0.0, 1.0);
-    this.context.fillStyle = Color.lerp(Color.fromResourceColor(this.circleColor.start), Color.fromResourceColor(this.circleColor.end), colorProgress)
+    this.context.fillStyle = DartColor.lerp(DartColor.fromResourceColor(this.circleColor.start), DartColor.fromResourceColor(this.circleColor.end), colorProgress)
       .toString();
     let center = this.circleSize * 0.5;
     // let strokeWidth = this.outerCircleRadiusProgress * center -

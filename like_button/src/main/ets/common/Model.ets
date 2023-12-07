@@ -1,3 +1,4 @@
+import { DartColor } from './Color';
 
 export enum LikeCountAnimationType {
   //no animation
@@ -8,12 +9,13 @@ export enum LikeCountAnimationType {
   all,
 }
 
+
 export class BubblesColor {
   constructor(value: {
-    dotPrimaryColor: ResourceColor,
-    dotSecondaryColor: ResourceColor,
-    dotThirdColor?: ResourceColor,
-    dotLastColor?: ResourceColor,
+    dotPrimaryColor: ResourceColor | DartColor,
+    dotSecondaryColor: ResourceColor | DartColor,
+    dotThirdColor?: ResourceColor | DartColor,
+    dotLastColor?: ResourceColor | DartColor,
   }) {
     this.dotPrimaryColor = value.dotPrimaryColor;
     this.dotSecondaryColor = value.dotSecondaryColor;
@@ -21,22 +23,23 @@ export class BubblesColor {
     this.dotLastColor = value.dotLastColor == undefined ? value.dotSecondaryColor : value.dotLastColor;
   }
 
-  dotPrimaryColor: ResourceColor;
-  dotSecondaryColor: ResourceColor;
-  dotThirdColor: ResourceColor;
-  dotLastColor: ResourceColor;
+  dotPrimaryColor: ResourceColor | DartColor;
+  dotSecondaryColor: ResourceColor | DartColor;
+  dotThirdColor: ResourceColor | DartColor;
+  dotLastColor: ResourceColor | DartColor;
 }
+
 
 export class CircleColor {
   constructor(value: {
-    start: ResourceColor,
-    end: ResourceColor,
+    start: ResourceColor | DartColor,
+    end: ResourceColor | DartColor,
   }) {
     this.start = value.start;
     this.end = value.end;
   }
 
-  start: ResourceColor;
-  end: ResourceColor;
+  start: ResourceColor | DartColor;
+  end: ResourceColor | DartColor;
 }
 

@@ -2,12 +2,12 @@ import { BubblesColor, CircleColor, LikeCountAnimationType } from '../common/Mod
 import { BubblesPainter } from '../painter/BubblesPainter';
 import { CirclePainter } from '../painter/CirclePainter';
 import animator, { AnimatorOptions, AnimatorResult } from '@ohos.animator';
-import { DecelerateCurve, Interval, OvershootCurve } from '../common/Curve';
+import { Cubic, DecelerateCurve, Interval, OvershootCurve } from '../common/Curve';
 import like_button from '../common/Controller';
 
 @Component
 export struct LikeButton {
-  @Link controller: like_button.Controller;
+  controller: like_button.Controller | null;
   @BuilderParam
   likeWidgetBuilder?: ($$: { isLiked: boolean }) => void = this.buildLikeWidget.bind(this);
   @BuilderParam
@@ -19,6 +19,77 @@ export struct LikeButton {
   onTap: (isLike: boolean) => Promise<boolean> = async (isLike: boolean) => {
     return !isLike;
   };
+  /// size of like widget
+  @Prop likeWidgetSize: number = 30;
+  /// animation duration to change isLiked state
+  // final Duration animationDuration;
+
+  /// total size of bubbles
+  @Prop bubblesSize: number | null = null;
+  /// colors of bubbles
+  @Prop bubblesColor: BubblesColor = new BubblesColor(
+    { dotPrimaryColor: '#FFFFC107',
+      dotSecondaryColor: '#FFFF9800',
+      dotThirdColor: '#FFFF5722',
+      dotLastColor: '#FFF44336', }
+  );
+  /// size of circle
+  @Prop circleSize: number | null = null;
+  /// colors of circle
+  @Prop circleColor: CircleColor = new CircleColor({ start: '#FFFF5722', end: '#FFFFC107', });
+  /// whether it is liked
+  /// it's initial value
+  @Prop isLiked: boolean = false;
+  /// animation duration to change isLiked state
+  @Prop animationDuration: number = 1000;
+  /// like count
+  @Prop likeCount: number | null = null;
+  /// The FlexOptions of LikeWidget and LikeCountWidget
+  @Prop flexOptions: FlexOptions = {
+    direction: FlexDirection.Row,
+    justifyContent: FlexAlign.Center,
+    alignItems: ItemAlign.Center,
+  };
+  /// animation type to change like count(none,part,all)
+  @Prop likeCountAnimationType: LikeCountAnimationType = LikeCountAnimationType.part;
+  /// The Margin between LikeWidget and LikeCountWidget
+  @Prop widgetsMargin: number = 5;
+  @Prop likeCountAnimationDuration: number = 1000;
+  _outerCircleCurve = new Interval({
+    begin: 0.0,
+    end: 0.3,
+    curve: Cubic.ease,
+    beginValue: 0.1,
+    endValue: 1.0,
+  });
+  _innerCircleCurve = new Interval({
+    begin: 0.2,
+    end: 0.5,
+    curve: Cubic.ease,
+    beginValue: 0.2,
+    endValue: 1.0,
+  });
+  _bubblesCurve = new Interval({
+    begin: 0.1,
+    end: 1.0,
+    curve: new DecelerateCurve(),
+    beginValue: 0.0,
+    endValue: 1.0,
+  });
+  _iconScaleCurve = new Interval({
+    begin: 0.35,
+    end: 0.7,
+    curve: new OvershootCurve(),
+    beginValue: 0.1,
+    endValue: 1.0
+  });
+  @State private _preLikeCount: number = 0;
+  @State _samePartOfLikeCount: string = '';
+  @State _preDifPartOfLikeCount: string = '';
+  @State _difPartOfLikeCount: string = '';
+  @State _likeCountOffset: number = 0;
+  @State _preLikeCountHeight: number = 0;
+  @State _likeCountHeight: number = 0;
 
   @Builder
   buildLikeWidget($$: { isLiked: boolean }) {
@@ -27,23 +98,26 @@ export struct LikeButton {
   }
 
   aboutToAppear() {
-    if (this.controller.bubblesSize == undefined) {
-      this.controller.bubblesSize = this.controller.likeComponentSize * 2;
+    if (this.bubblesSize == null) {
+      this.bubblesSize = this.likeWidgetSize * 2;
     }
-    if (this.controller.circleSize == undefined) {
-      this.controller.circleSize = this.controller.likeComponentSize * 0.8;
+    if (this.circleSize == null) {
+      this.circleSize = this.likeWidgetSize * 0.8;
     }
-    if (this.controller.onTap == undefined) {
-      this.controller.onTap = this.onTap;
+
+    if (this.likeCount != null) {
+      this._preLikeCount = this.likeCount;
+      this.handleLikeCount();
     }
-    if (this.controller.likeCount != null) {
-      this.controller.preLikeCount = this.controller.likeCount;
-      this.controller.handleLikeCount();
+    if (this.controller != null) {
+      this.controller.onTap = () => {
+        this.Tap();
+      };
     }
   }
 
   aboutToDisappear() {
-    this.controller.dispose();
+    this.dispose();
   }
 
   @Builder
@@ -53,32 +127,32 @@ export struct LikeButton {
       alignContent: Alignment.TopStart
     }) {
       BubblesPainter(
-        { bubblesSize: this.controller.bubblesSize,
-          bubblesColor: this.controller.bubblesColor,
-          currentProgress: this.controller.bubblesProgress,
+        { bubblesSize: this.bubblesSize,
+          bubblesColor: this.bubblesColor,
+          currentProgress: this._bubblesProgress,
         }
       ).position({
-        x: -(this.controller.bubblesSize - this.controller.likeComponentSize) / 2.0,
-        y: -(this.controller.bubblesSize - this.controller.likeComponentSize) / 2.0,
+        x: -(this.bubblesSize - this.likeWidgetSize) / 2.0,
+        y: -(this.bubblesSize - this.likeWidgetSize) / 2.0,
       })
       CirclePainter(
         {
-          circleColor: this.controller.circleColor,
-          circleSize: this.controller.circleSize,
-          innerCircleRadiusProgress: this.controller.innerCircleRadiusProgress,
-          outerCircleRadiusProgress: this.controller.outerCircleRadiusProgress,
+          circleColor: this.circleColor,
+          circleSize: this.circleSize,
+          innerCircleRadiusProgress: this._innerCircleRadiusProgress,
+          outerCircleRadiusProgress: this._outerCircleRadiusProgress,
         }
       ).position({
-        x: -(this.controller.circleSize - this.controller.likeComponentSize) / 2.0,
-        y: -(this.controller.circleSize - this.controller.likeComponentSize) / 2.0,
+        x: -(this.circleSize - this.likeWidgetSize) / 2.0,
+        y: -(this.circleSize - this.likeWidgetSize) / 2.0,
       })
       Column() {
-        this.likeWidgetBuilder({ isLiked: this.controller.isLiked })
+        this.likeWidgetBuilder({ isLiked: this.isLiked })
       }.scale({
-        x: this.controller.isLiked ? this.controller.iconScale : 1.0,
-        y: this.controller.isLiked ? this.controller.iconScale : 1.0,
+        x: this.isLiked ? this._iconScale : 1.0,
+        y: this.isLiked ? this._iconScale : 1.0,
       })
-    }.width(this.controller.likeComponentSize).height(this.controller.likeComponentSize)
+    }.width(this.likeWidgetSize).height(this.likeWidgetSize).clip(false)
   }
 
   @Builder
@@ -87,69 +161,69 @@ export struct LikeButton {
     likeCount: number,
     showText: string
   }) {
-    Text(`${$$.showText}`).fontSize(20)
+    Text(`${$$.showText}`)
   }
 
   @Builder
   buildCountComponent() {
-    if (this.controller.likeCountAnimationType == LikeCountAnimationType.none
-      || this.controller.likeCount == this.controller.preLikeCount
+    if (this.likeCountAnimationType == LikeCountAnimationType.none
+      || this.likeCount == this._preLikeCount
     )
       this.likeCountWidgetBuilder({
-        isLiked: this.controller.isLiked,
-        likeCount: this.controller.likeCount,
-        showText: this.controller.likeCount.toString(),
+        isLiked: this.isLiked,
+        likeCount: this.likeCount,
+        showText: this.likeCount.toString(),
       })
-    else if (this.controller.likeCountAnimationType == LikeCountAnimationType.part
+    else if (this.likeCountAnimationType == LikeCountAnimationType.part
+      && this._samePartOfLikeCount != ''
     )
     Row() {
-      if (this.controller.samePartOfLikeCount != '')
       // same
       Stack() {
 
         // pre
         Column() {
           this.likeCountWidgetBuilder({
-            isLiked: !this.controller.isLiked,
-            likeCount: this.controller.preLikeCount,
-            showText: this.controller.samePartOfLikeCount,
+            isLiked: !this.isLiked,
+            likeCount: this._preLikeCount,
+            showText: this._samePartOfLikeCount,
           })
-        }.opacity(1 - this.controller.likeCountOpacity)
+        }.opacity(1 - this._likeCountOpacity)
 
         // current
         Column() {
           this.likeCountWidgetBuilder({
-            isLiked: this.controller.isLiked,
-            likeCount: this.controller.likeCount,
-            showText: this.controller.samePartOfLikeCount,
+            isLiked: this.isLiked,
+            likeCount: this.likeCount,
+            showText: this._samePartOfLikeCount,
           })
-        }.opacity(this.controller.likeCountOpacity)
+        }.opacity(this._likeCountOpacity)
       }
 
       // diff
       Stack() {
         Column() {
           this.likeCountWidgetBuilder({
-            isLiked: !this.controller.isLiked,
-            likeCount: this.controller.preLikeCount,
-            showText: this.controller.preDifPartOfLikeCount,
+            isLiked: !this.isLiked,
+            likeCount: this._preLikeCount,
+            showText: this._preDifPartOfLikeCount,
           })
-        }.opacity(1 - this.controller.likeCountOpacity).onAreaChange((a, b) => {
-          this.controller.preLikeCountHeight = b.height as number;
+        }.opacity(1 - this._likeCountOpacity).onAreaChange((_, b) => {
+          this._preLikeCountHeight = b.height as number;
         }).position({
-          y: this.controller.preLikeCountHeight * (this.controller.isLiked ? -this.controller.likeCountOffset : this.controller.likeCountOffset)
+          y: this._preLikeCountHeight * (this.isLiked ? -this._likeCountOffset : this._likeCountOffset)
         })
 
         Column() {
           this.likeCountWidgetBuilder({
-            isLiked: this.controller.isLiked,
-            likeCount: this.controller.likeCount,
-            showText: this.controller.difPartOfLikeCount,
+            isLiked: this.isLiked,
+            likeCount: this.likeCount,
+            showText: this._difPartOfLikeCount,
           })
-        }.opacity(this.controller.likeCountOpacity).onAreaChange((a, b) => {
-          this.controller.likeCountHeight = b.height as number;
+        }.opacity(this._likeCountOpacity).onAreaChange((_, b) => {
+          this._likeCountHeight = b.height as number;
         }).position({
-          y: this.controller.likeCountHeight * (this.controller.isLiked ? 1 - this.controller.likeCountOffset : this.controller.likeCountOffset - 1)
+          y: this._likeCountHeight * (this.isLiked ? 1 - this._likeCountOffset : this._likeCountOffset - 1)
         })
       }
     }.justifyContent(FlexAlign.Center)
@@ -158,42 +232,173 @@ export struct LikeButton {
       // pre
       Column() {
         this.likeCountWidgetBuilder({
-          isLiked: !this.controller.isLiked,
-          likeCount: this.controller.preLikeCount,
-          showText: this.controller.preLikeCount.toString(),
+          isLiked: !this.isLiked,
+          likeCount: this._preLikeCount,
+          showText: this._preLikeCount.toString(),
         })
-      }.opacity(1 - this.controller.likeCountOpacity)
-      .onAreaChange((a, b) => {
-        this.controller.preLikeCountHeight = b.height as number;
+      }.opacity(1 - this._likeCountOpacity)
+      .onAreaChange((_, b) => {
+        this._preLikeCountHeight = b.height as number;
       })
       .position({
-        y: this.controller.preLikeCountHeight * (this.controller.isLiked ? -this.controller.likeCountOffset : this.controller.likeCountOffset)
+        y: this._preLikeCountHeight * (this.isLiked ? -this._likeCountOffset : this._likeCountOffset)
       })
 
       // current
       Column() {
         this.likeCountWidgetBuilder({
-          isLiked: this.controller.isLiked,
-          likeCount: this.controller.likeCount,
-          showText: this.controller.likeCount.toString(),
+          isLiked: this.isLiked,
+          likeCount: this.likeCount,
+          showText: this.likeCount.toString(),
         })
-      }.opacity(this.controller.likeCountOpacity).onAreaChange((a, b) => {
-        this.controller.likeCountHeight = b.height as number;
+      }.opacity(this._likeCountOpacity).onAreaChange((_, b) => {
+        this._likeCountHeight = b.height as number;
       }).position({
-        y: this.controller.likeCountHeight * (this.controller.isLiked ? 1 - this.controller.likeCountOffset : this.controller.likeCountOffset - 1)
+        y: this._likeCountHeight * (this.isLiked ? 1 - this._likeCountOffset : this._likeCountOffset - 1)
       })
     }
   }
 
   build() {
     Flex(
-      this.controller.flexOptions,
+      this.flexOptions,
     ) {
       this.buildLikeComponent()
-      if (this.controller.likeCount != null)
+      if (this.likeCount != null)
+      Column() {
         this.buildCountComponent()
-    }.onClick((event) => {
-      this.controller.Tap();
+      }.clip(true).margin({
+        left: this.flexOptions.direction == FlexDirection.Row ? this.widgetsMargin : 0,
+        right: this.flexOptions.direction == FlexDirection.RowReverse ? this.widgetsMargin : 0,
+        top: this.flexOptions.direction == FlexDirection.Column ? this.widgetsMargin : 0,
+        bottom: this.flexOptions.direction == FlexDirection.ColumnReverse ? this.widgetsMargin : 0,
+      })
+    }.onClick((_) => {
+      this.Tap();
     })
+  }
+
+  _animatorResult: AnimatorResult | undefined = undefined;
+  _likeCountAnimatorResult: AnimatorResult | undefined = undefined;
+  @State _outerCircleRadiusProgress: number = 0;
+  @State _innerCircleRadiusProgress: number = 0;
+  @State _bubblesProgress: number = 0;
+  @State _iconScale: number = 0;
+  @State _likeCountOpacity: number = 0;
+
+  initAnimation() {
+    let options: AnimatorOptions = {
+      duration: this.animationDuration,
+      easing: "ease",
+      delay: 0,
+      fill: "forwards",
+      direction: "normal",
+      iterations: 1,
+      begin: 0.0,
+      end: 1.0
+    };
+    // curve: const Interval(
+    //   0.0,
+    //   0.3,
+    //   curve: Curves.ease,
+    // ),
+
+    this._animatorResult = animator.create(options);
+    this._animatorResult.onframe = (value: number) => {
+      this._outerCircleRadiusProgress = this._outerCircleCurve.transform(value);
+      this._innerCircleRadiusProgress = this._innerCircleCurve.transform(value);
+      this._bubblesProgress = this._bubblesCurve.transform(value);
+      this._iconScale = this._iconScaleCurve.transform(value);
+    };
+    this._animatorResult.onfinish = () => {
+      this._animatorResult = undefined;
+    }
+  }
+
+  public isAnimating(): boolean {
+    return this._animatorResult != undefined || this._likeCountAnimatorResult != undefined;
+  }
+
+  playLikeAnimation() {
+    if (this._animatorResult != undefined) {
+      return;
+    }
+    this.initAnimation();
+    this._animatorResult.play();
+  }
+
+  dispose() {
+    if (this._animatorResult != undefined) {
+      this._animatorResult.cancel();
+      this._animatorResult = undefined;
+    }
+  }
+
+  Tap() {
+    if (this.isAnimating()) {
+      return;
+    }
+    this.onTap(this.isLiked).then((value) => {
+      this.isLiked = value;
+      if (this.likeCount != null) {
+        this._preLikeCount = this.likeCount;
+        this.likeCount += (this.isLiked ? 1 : -1)
+        this.handleLikeCount();
+        this.playLikeCountAnimation();
+      }
+
+      if (this.isLiked) {
+        this.playLikeAnimation();
+      }
+    });
+  }
+
+  initLikeCountAnimation() {
+    let options: AnimatorOptions = {
+      duration: this.likeCountAnimationDuration,
+      easing: "ease",
+      delay: 0,
+      fill: "forwards",
+      direction: "normal",
+      iterations: 1,
+      begin: 0.0,
+      end: 1.0,
+    };
+    this._likeCountAnimatorResult = animator.create(options);
+    this._likeCountAnimatorResult.onframe = (value) => {
+      this._likeCountOpacity = value;
+      this._likeCountOffset = value;
+    };
+    this._likeCountAnimatorResult.onfinish = () => {
+      this._likeCountAnimatorResult = undefined;
+    };
+  }
+
+  playLikeCountAnimation() {
+    if (this._likeCountAnimatorResult != undefined) {
+      return;
+    }
+    this.initLikeCountAnimation()
+    this._likeCountAnimatorResult.play();
+  }
+
+  handleLikeCount() {
+    let preLikeCount = this._preLikeCount.toString();
+    let likeCount = this.likeCount.toString();
+    if (preLikeCount.length != likeCount.length) {
+      this._samePartOfLikeCount = '';
+      this._preDifPartOfLikeCount = preLikeCount;
+      this._difPartOfLikeCount = likeCount;
+    }
+    else {
+      for (let index = 0; index < likeCount.length; index++) {
+        if (preLikeCount[index] != likeCount[index]) {
+          this._samePartOfLikeCount = likeCount.substring(0, index);
+          this._preDifPartOfLikeCount = preLikeCount.substring(index);
+          this._difPartOfLikeCount = likeCount.substring(index);
+          break;
+        }
+      }
+    }
   }
 }
