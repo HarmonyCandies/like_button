@@ -1,3 +1,13 @@
+
+export enum LikeCountAnimationType {
+  //no animation
+  none,
+  //animation only on change part
+  part,
+  //animation on all
+  all,
+}
+
 export class BubblesColor {
   constructor(value: {
     dotPrimaryColor: ResourceColor,

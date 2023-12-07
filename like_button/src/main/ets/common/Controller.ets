@@ -1,4 +1,4 @@
-import { BubblesColor, CircleColor } from './Model';
+import { BubblesColor, CircleColor, LikeCountAnimationType } from './Model';
 import animator, { AnimatorOptions, AnimatorResult } from '@ohos.animator';
 import { Cubic, DecelerateCurve, Interval, OvershootCurve } from './Curve';
 
@@ -31,12 +31,24 @@ namespace like_button {
     isLiked: boolean | null = false;
     /// animation duration to change isLiked state
     animationDuration: number = 1000;
+    onTap: (isLike: boolean) => Promise<boolean>;
+    /// like count
+    /// if null, will not show
+    /// it's initial value
+    /// you can get current value from countBuilder
+    likeCount: number | null = null;
+    flexOptions?: FlexOptions = {
+      direction: FlexDirection.Row,
+      justifyContent: FlexAlign.Center,
+    };
+    likeCountAnimationType?: LikeCountAnimationType = LikeCountAnimationType.part;
+    _animatorResult: AnimatorResult | undefined = undefined;
+    _likeCountAnimatorResult: AnimatorResult | undefined = undefined;
     outerCircleRadiusProgress: number = 0;
     innerCircleRadiusProgress: number = 0;
     bubblesProgress: number = 0;
     iconScale: number = 0;
-    _animatorResult: AnimatorResult | undefined = undefined;
-    onTap: (isLike: boolean) => Promise<boolean>;
+    likeCountOpacity: number = 0;
     private outerCircleCurve = new Interval({
       begin: 0.0,
       end: 0.3,
@@ -65,6 +77,10 @@ namespace like_button {
       beginValue: 0.1,
       endValue: 1.0
     });
+
+    constructor() {
+
+    }
 
     initAnimation() {
 
@@ -97,12 +113,11 @@ namespace like_button {
     }
 
     public isAnimating(): boolean {
-      return this._animatorResult != undefined;
-
+      return this._animatorResult != undefined || this._likeCountAnimatorResult != undefined;
     }
 
-    play() {
-      if (this.isAnimating()) {
+    playLikeAnimation() {
+      if (this._animatorResult != undefined) {
         return;
       }
       this.initAnimation();
@@ -116,16 +131,82 @@ namespace like_button {
       }
     }
 
+    preLikeCount: number = 0;
+    samePartOfLikeCount: string = '';
+    preDifPartOfLikeCount: string = '';
+    difPartOfLikeCount: string = '';
+
     Tap() {
       if (this.isAnimating()) {
         return;
       }
       this.onTap(this.isLiked).then((value) => {
         this.isLiked = value;
+        if (this.likeCount != null) {
+          this.preLikeCount = this.likeCount;
+          this.likeCount += (this.isLiked ? 1 : -1)
+          this.handleLikeCount();
+          this.playLikeCountAnimation();
+        }
+
         if (this.isLiked) {
-          this.play();
+          this.playLikeAnimation();
         }
       });
+    }
+
+    likeCountOffset: number = 0;
+    preLikeCountHeight: number = 0;
+    likeCountHeight: number = 0;
+
+    initLikeCountAnimation() {
+
+      let options: AnimatorOptions = {
+        duration: this.animationDuration,
+        easing: "ease",
+        delay: 0,
+        fill: "forwards",
+        direction: "normal",
+        iterations: 1,
+        begin: 0.0 ,
+        end: 1.0,
+      };
+      this._likeCountAnimatorResult = animator.create(options);
+      this._likeCountAnimatorResult.onframe = (value) => {
+        this.likeCountOpacity = value;
+        this.likeCountOffset = value;
+      };
+      this._likeCountAnimatorResult.onfinish = () => {
+        this._likeCountAnimatorResult = undefined;
+      };
+    }
+
+    playLikeCountAnimation() {
+      if (this._likeCountAnimatorResult != undefined) {
+        return;
+      }
+      this.initLikeCountAnimation()
+      this._likeCountAnimatorResult.play();
+    }
+
+    handleLikeCount() {
+      let preLikeCount = this.preLikeCount.toString();
+      let likeCount = this.likeCount.toString();
+      if (preLikeCount.length != likeCount.length) {
+        this.samePartOfLikeCount = '';
+        this.preDifPartOfLikeCount = preLikeCount;
+        this.difPartOfLikeCount = likeCount;
+      }
+      else {
+        for (let index = 0; index < likeCount.length; index++) {
+          if (preLikeCount[index] != likeCount[index]) {
+            this.samePartOfLikeCount = likeCount.substring(0, index);
+            this.preDifPartOfLikeCount = preLikeCount.substring(index);
+            this.difPartOfLikeCount = likeCount.substring(index);
+            break;
+          }
+        }
+      }
     }
   }
 }

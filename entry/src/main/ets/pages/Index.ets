@@ -1,4 +1,5 @@
 import { LikeButton, like_button } from '@candies/like_button';
+import { LikeCountAnimationType } from '@candies/like_button/src/main/ets/common/Model';
 
 @Entry
 @Component
@@ -9,10 +10,12 @@ struct Index {
   aboutToAppear() {
     // this.controller.likeComponentSize = 150;
     // this.controller.animationDuration=5000;
+    this.controller.likeCount = 100;
+    this.controller.likeCountAnimationType=LikeCountAnimationType.all;
   }
 
   build() {
-    Navigation(){
+    Navigation() {
       Grid() {
         GridItem() {
           LikeButton(
@@ -21,6 +24,7 @@ struct Index {
             }
           )
         }
+
         GridItem() {
           LikeButton(
             {
@@ -28,6 +32,7 @@ struct Index {
             }
           )
         }
+
         GridItem() {
           LikeButton(
             {
