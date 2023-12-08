@@ -7,7 +7,7 @@ import like_button from '../common/Controller';
 
 @Component
 export struct LikeButton {
-  controller: like_button.Controller | null;
+  controller: like_button.Controller = undefined;
   @BuilderParam
   likeWidgetBuilder?: ($$: { isLiked: boolean }) => void = this.buildLikeWidget.bind(this);
   @BuilderParam
@@ -25,7 +25,7 @@ export struct LikeButton {
   // final Duration animationDuration;
 
   /// total size of bubbles
-  @Prop bubblesSize: number | null = null;
+  @Prop bubblesSize: number = undefined;
   /// colors of bubbles
   @Prop bubblesColor: BubblesColor = new BubblesColor(
     { dotPrimaryColor: '#FFFFC107',
@@ -34,7 +34,7 @@ export struct LikeButton {
       dotLastColor: '#FFF44336', }
   );
   /// size of circle
-  @Prop circleSize: number | null = null;
+  @Prop circleSize: number = undefined;
   /// colors of circle
   @Prop circleColor: CircleColor = new CircleColor({ start: '#FFFF5722', end: '#FFFFC107', });
   /// whether it is liked
@@ -43,7 +43,7 @@ export struct LikeButton {
   /// animation duration to change isLiked state
   @Prop animationDuration: number = 1000;
   /// like count
-  @Prop likeCount: number | null = null;
+  @Prop likeCount: number = undefined;
   /// The FlexOptions of LikeWidget and LikeCountWidget
   @Prop flexOptions: FlexOptions = {
     direction: FlexDirection.Row,
@@ -98,18 +98,18 @@ export struct LikeButton {
   }
 
   aboutToAppear() {
-    if (this.bubblesSize == null) {
+    if (this.bubblesSize == undefined) {
       this.bubblesSize = this.likeWidgetSize * 2;
     }
-    if (this.circleSize == null) {
+    if (this.circleSize == undefined) {
       this.circleSize = this.likeWidgetSize * 0.8;
     }
 
-    if (this.likeCount != null) {
+    if (this.likeCount != undefined) {
       this._preLikeCount = this.likeCount;
       this.handleLikeCount();
     }
-    if (this.controller != null) {
+    if (this.controller != undefined) {
       this.controller.onTap = () => {
         this.Tap();
       };
@@ -264,7 +264,7 @@ export struct LikeButton {
       this.flexOptions,
     ) {
       this.buildLikeComponent()
-      if (this.likeCount != null)
+      if (this.likeCount != undefined)
       Column() {
         this.buildCountComponent()
       }.clip(true).margin({
@@ -340,7 +340,7 @@ export struct LikeButton {
     }
     this.onTap(this.isLiked).then((value) => {
       this.isLiked = value;
-      if (this.likeCount != null) {
+      if (this.likeCount != undefined) {
         this._preLikeCount = this.likeCount;
         this.likeCount += (this.isLiked ? 1 : -1)
         this.handleLikeCount();
