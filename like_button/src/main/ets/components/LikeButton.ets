@@ -16,29 +16,26 @@ export struct LikeButton {
     likeCount: number,
     showText: string
   }) => void = this.buildLikeCountWidget.bind(this);
+  /// tap call back of like button
   onTap: (isLike: boolean) => Promise<boolean> = async (isLike: boolean) => {
     return !isLike;
   };
   /// size of like widget
   @Prop likeWidgetSize: number = 30;
-  /// animation duration to change isLiked state
-  // final Duration animationDuration;
-
   /// total size of bubbles
   @Prop bubblesSize: number = undefined;
   /// colors of bubbles
-  @Prop bubblesColor: BubblesColor = new BubblesColor(
-    { dotPrimaryColor: '#FFFFC107',
-      dotSecondaryColor: '#FFFF9800',
-      dotThirdColor: '#FFFF5722',
-      dotLastColor: '#FFF44336', }
-  );
+  @Prop bubblesColor: BubblesColor = new BubblesColor({
+    dotPrimaryColor: '#FFFFC107',
+    dotSecondaryColor: '#FFFF9800',
+    dotThirdColor: '#FFFF5722',
+    dotLastColor: '#FFF44336',
+  });
   /// size of circle
   @Prop circleSize: number = undefined;
   /// colors of circle
   @Prop circleColor: CircleColor = new CircleColor({ start: '#FFFF5722', end: '#FFFFC107', });
   /// whether it is liked
-  /// it's initial value
   @Prop isLiked: boolean = false;
   /// animation duration to change isLiked state
   @Prop animationDuration: number = 1000;
