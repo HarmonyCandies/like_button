@@ -1,17 +1,18 @@
 {
   "license": "Apache-2.0",
   "devDependencies": {},
-  "author": "zmtzawqlp",
   "keywords": [
-    "like_button",
+    "like",
+    "likebutton",
     "button",
-    "animation_button"
+    "animationbutton"
   ],
+  "author": "zmtzawqlp",
   "name": "@candies/like_button",
-  "description": "Like Button is a ArkTS library that allows you to create a button with animation effects similar to Twitter's heart when you like something and animation effects to increase like count.",
+  "description": "Like Button is a ArkTS library that allows you to create a button with animation effects similar to Twitter\u0027s heart when you like something and animation effects to increase like count.",
   "main": "Index.ets",
-  "version": "1.0.0",
   "repository": "https://github.com/HarmonyCandies/like_button",
   "version": "1.0.0",
-  "homepage": "https://github.com/HarmonyCandies/like_button"
+  "homepage": "https://github.com/HarmonyCandies/like_button",
+  "dependencies": {}
 }
