@@ -329,6 +329,11 @@ export struct LikeButton {
       this._animatorResult.cancel();
       this._animatorResult = undefined;
     }
+
+    if (this._likeCountAnimatorResult != undefined) {
+      this._likeCountAnimatorResult.cancel();
+      this._likeCountAnimatorResult = undefined;
+    }
   }
 
   Tap() {
