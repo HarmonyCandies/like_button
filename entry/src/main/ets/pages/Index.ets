@@ -4,7 +4,9 @@ import {
   LikeButton,
   like_button,
   DartColor,
-  LikeCountAnimationType
+  LikeCountAnimationType,
+  LikeWidgetBuilderParam,
+  LikeCountWidgetBuilderParam,
 } from '@candies/like_button';
 
 @Entry
@@ -19,59 +21,55 @@ struct Index {
   }
 
   @Builder
-  buildLikeWidget1($$: { isLiked: boolean }) {
+  buildLikeWidget1($$: LikeWidgetBuilderParam) {
     Image($r('app.media.bag'))
       .fillColor($$.isLiked ? '#FF7C4DFF' : Color.Gray)
   }
 
   @Builder
-  buildLikeWidget2($$: { isLiked: boolean }) {
+  buildLikeWidget2($$: LikeWidgetBuilderParam) {
     Image($r('app.media.clean'))
       .fillColor($$.isLiked ? Color.Green : Color.Gray)
   }
 
   @Builder
-  buildLikeWidget3($$: { isLiked: boolean }) {
+  buildLikeWidget3($$: LikeWidgetBuilderParam) {
     Image($r('app.media.flower'))
       .fillColor($$.isLiked ? Color.Red : Color.Gray)
   }
 
   @Builder
-  buildLikeWidget4($$: { isLiked: boolean }) {
+  buildLikeWidget4($$: LikeWidgetBuilderParam) {
     Image($r('app.media.color_palette'))
       .fillColor($$.isLiked ? '#FF40C4FF' : Color.Gray)
   }
 
   @Builder
-  buildLikeWidget5($$: { isLiked: boolean }) {
+  buildLikeWidget5($$: LikeWidgetBuilderParam) {
     Image($r('app.media.eraser'))
       .fillColor($$.isLiked ? '#FF212121' : Color.Gray)
   }
 
   @Builder
-  buildLikeWidget6($$: { isLiked: boolean }) {
+  buildLikeWidget6($$: LikeWidgetBuilderParam) {
     Image($r('app.media.clock'))
       .fillColor($$.isLiked ? '#FF536DFE' : Color.Gray)
   }
 
   @Builder
-  buildLikeWidget7($$: { isLiked: boolean }) {
+  buildLikeWidget7($$: LikeWidgetBuilderParam) {
     Image($r('app.media.lock'))
       .fillColor($$.isLiked ? '#FFE65100' : Color.Gray)
   }
 
   @Builder
-  buildLikeWidget8($$: { isLiked: boolean }) {
+  buildLikeWidget8($$: LikeWidgetBuilderParam) {
     Image($r('app.media.save'))
       .fillColor($$.isLiked ? '#FF004D40' : Color.Gray)
   }
 
   @Builder
-  buildLikeCountWidget($$: {
-    isLiked: boolean,
-    likeCount: number,
-    showText: string
-  }) {
+  buildLikeCountWidget($$: LikeCountWidgetBuilderParam) {
     if ($$.likeCount == 0)
       Text('love')
     else
@@ -79,20 +77,12 @@ struct Index {
   }
 
   @Builder
-  buildLikeCountWidget1($$: {
-    isLiked: boolean,
-    likeCount: number,
-    showText: string
-  }) {
+  buildLikeCountWidget1($$: LikeCountWidgetBuilderParam) {
     Text(`${$$.showText}`).fontColor($$.isLiked ? '#FF536DFE' : Color.Gray)
   }
 
   @Builder
-  buildLikeCountWidget2($$: {
-    isLiked: boolean,
-    likeCount: number,
-    showText: string
-  }) {
+  buildLikeCountWidget2($$: LikeCountWidgetBuilderParam) {
     if ($$.likeCount >= 1000)
       Text(`${($$.likeCount / 1000).toFixed(1)}k`).fontColor($$.isLiked ? '#FF004D40' : Color.Gray)
     else

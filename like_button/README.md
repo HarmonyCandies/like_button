@@ -1,5 +1,5 @@
 # like_button
-Like Button 支持推特点赞效果和喜欢数量动画的Flutter库.
+Like Button 支持推特点赞效果和点赞数量动画的 ArkUI 库.
 
 ![LikeButton](https://github.com/HarmonyCandies/HarmonyCandies/blob/main/gif/like_button/LikeButton.gif)
 
@@ -59,13 +59,9 @@ Like Button 支持推特点赞效果和喜欢数量动画的Flutter库.
 
 ```typescript
   @BuilderParam
-  likeWidgetBuilder?: ($$: { isLiked: boolean }) => void = this.buildLikeWidget.bind(this);
+  likeWidgetBuilder?: ($$: LikeWidgetBuilderParam) => void = this.buildLikeWidget;
   @BuilderParam
-  likeCountWidgetBuilder?: ($$: {
-    isLiked: boolean,
-    likeCount: number,
-    showText: string
-  }) => void = this.buildLikeCountWidget.bind(this);
+  likeCountWidgetBuilder?: ($$: LikeCountWidgetBuilderParam) => void = this.buildLikeCountWidget;
 ```
 
 ## 例子
@@ -107,11 +103,7 @@ LikeButton(
 )
 
 @Builder
-buildLikeCountWidget2($$: {
-  isLiked: boolean,
-  likeCount: number,
-  showText: string
-}) {
+buildLikeCountWidget2($$: LikeCountWidgetBuilderParam) {
   if ($$.likeCount >= 1000)
     Text(`${($$.likeCount / 1000).toFixed(1)}k`).fontColor($$.isLiked ? '#FF004D40' : Color.Gray)
   else
@@ -119,7 +111,7 @@ buildLikeCountWidget2($$: {
 }
 
 @Builder
-buildLikeWidget8($$: { isLiked: boolean }) {
+buildLikeWidget8($$: LikeWidgetBuilderParam) {
   Image($r('app.media.save'))
     .fillColor($$.isLiked ? '#FF004D40' : Color.Gray)
 }

@@ -9,13 +9,9 @@ import like_button from '../common/Controller';
 export struct LikeButton {
   controller: like_button.Controller = undefined;
   @BuilderParam
-  likeWidgetBuilder?: ($$: { isLiked: boolean }) => void = this.buildLikeWidget.bind(this);
+  likeWidgetBuilder?: ($$: LikeWidgetBuilderParam) => void = this.buildLikeWidget;
   @BuilderParam
-  likeCountWidgetBuilder?: ($$: {
-    isLiked: boolean,
-    likeCount: number,
-    showText: string
-  }) => void = this.buildLikeCountWidget.bind(this);
+  likeCountWidgetBuilder?: ($$: LikeCountWidgetBuilderParam) => void = this.buildLikeCountWidget;
   /// tap call back of like button
   onTap: (isLike: boolean) => Promise<boolean> = async (isLike: boolean) => {
     return !isLike;
@@ -89,7 +85,7 @@ export struct LikeButton {
   @State _likeCountHeight: number = 0;
 
   @Builder
-  buildLikeWidget($$: { isLiked: boolean }) {
+  buildLikeWidget($$: LikeWidgetBuilderParam) {
     Image($r('app.media.favorite'))
       .fillColor($$.isLiked ? Color.Pink : Color.Gray)
   }
@@ -153,11 +149,7 @@ export struct LikeButton {
   }
 
   @Builder
-  buildLikeCountWidget($$: {
-    isLiked: boolean,
-    likeCount: number,
-    showText: string
-  }) {
+  buildLikeCountWidget($$: LikeCountWidgetBuilderParam) {
     Text(`${$$.showText}`)
   }
 
@@ -403,4 +395,14 @@ export struct LikeButton {
       }
     }
   }
+}
+
+export class LikeCountWidgetBuilderParam {
+  isLiked: boolean;
+  likeCount: number;
+  showText: string;
+}
+
+export class LikeWidgetBuilderParam {
+  isLiked: boolean;
 }

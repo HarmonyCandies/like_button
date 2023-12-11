@@ -1,4 +1,4 @@
-export { LikeButton } from './src/main/ets/components/LikeButton'
+export { LikeButton, LikeWidgetBuilderParam, LikeCountWidgetBuilderParam, } from './src/main/ets/components/LikeButton'
 
 export { DartColor } from './src/main/ets/common/Color'
 

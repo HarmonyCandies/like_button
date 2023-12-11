@@ -9,10 +9,10 @@
   ],
   "author": "zmtzawqlp",
   "name": "@candies/like_button",
-  "description": "Like Button is a ArkTS library that allows you to create a button with animation effects similar to Twitter\u0027s heart when you like something and animation effects to increase like count.",
+  "description": "Like Button 支持推特点赞效果和点赞数量动画的 ArkUI 库.",
   "main": "Index.ets",
   "repository": "https://github.com/HarmonyCandies/like_button",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/HarmonyCandies/like_button",
   "dependencies": {}
 }
