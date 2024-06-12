@@ -4,14 +4,16 @@ export abstract class Curve {
   abstract transform(t: number): number;
 }
 
+interface IntervalParam {
+  begin: number;
+  end: number;
+  curve: Curve;
+  beginValue: number;
+  endValue: number;
+}
+
 export class Interval extends Curve {
-  constructor(value: {
-    begin: number,
-    end: number,
-    curve: Curve,
-    beginValue: number,
-    endValue: number,
-  }) {
+  constructor(value: IntervalParam) {
     super();
     this.begin = value.begin;
     this.end = value.end;

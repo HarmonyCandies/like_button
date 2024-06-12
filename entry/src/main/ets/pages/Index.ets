@@ -70,10 +70,11 @@ struct Index {
 
   @Builder
   buildLikeCountWidget($$: LikeCountWidgetBuilderParam) {
-    if ($$.likeCount == 0)
+    if ($$.likeCount == 0) {
       Text('love')
-    else
+    } else {
       Text(`${$$.showText}`)
+    }
   }
 
   @Builder
@@ -83,10 +84,11 @@ struct Index {
 
   @Builder
   buildLikeCountWidget2($$: LikeCountWidgetBuilderParam) {
-    if ($$.likeCount >= 1000)
+    if ($$.likeCount >= 1000) {
       Text(`${($$.likeCount / 1000).toFixed(1)}k`).fontColor($$.isLiked ? '#FF004D40' : Color.Gray)
-    else
+    } else {
       Text(`${$$.showText}`).fontColor($$.isLiked ? '#FF004D40' : Color.Gray)
+    }
   }
 
   @Builder
@@ -108,7 +110,6 @@ struct Index {
             }
           )
         }
-
         GridItem() {
           LikeButton(
             {
@@ -117,14 +118,14 @@ struct Index {
                 return true;
               },
               likeWidgetBuilder: this.buildLikeWidget1,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: '#ff33b5e5',
                 dotSecondaryColor: '#ff0099cc',
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: '#ff00ddff',
                 end: '#ff0099cc',
-              }),
+              },
             }
           )
         }
@@ -134,14 +135,14 @@ struct Index {
             {
               likeCount: 888,
               likeWidgetBuilder: this.buildLikeWidget2,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: new DartColor(0xff669900),
                 dotSecondaryColor: new DartColor(0xff99cc00),
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: new DartColor(0xff669900),
                 end: new DartColor(0xff669900),
-              }),
+              },
               flexOptions: {
                 direction: FlexDirection.RowReverse,
                 justifyContent: FlexAlign.Center,
@@ -156,14 +157,14 @@ struct Index {
             {
               likeCount: 888,
               likeWidgetBuilder: this.buildLikeWidget3,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: '#FFE57373',
                 dotSecondaryColor: '#FFEF9A9A',
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: '#FFFF8A80',
                 end: '#FFFF1744',
-              }),
+              },
               flexOptions: {
                 direction: FlexDirection.Column,
                 justifyContent: FlexAlign.Center,
@@ -178,14 +179,14 @@ struct Index {
             {
               likeCount: 888,
               likeWidgetBuilder: this.buildLikeWidget4,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: '#FF4FC3F7',
                 dotSecondaryColor: '#FF81D4FA',
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: '#FFFF4081',
                 end: '#FFF50057',
-              }),
+              },
               flexOptions: {
                 direction: FlexDirection.ColumnReverse,
                 justifyContent: FlexAlign.Center,
@@ -200,14 +201,14 @@ struct Index {
             {
               likeCount: 0,
               likeWidgetBuilder: this.buildLikeWidget5,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: '#FF757575',
                 dotSecondaryColor: '#FFEEEEEE',
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: '#FFEEEEEE',
                 end: '#FFBDBDBD',
-              }),
+              },
               likeCountWidgetBuilder: this.buildLikeCountWidget,
             }
           )
@@ -218,14 +219,14 @@ struct Index {
             {
               likeCount: 888,
               likeWidgetBuilder: this.buildLikeWidget6,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: '#FF304FFE',
                 dotSecondaryColor: '#FF536DFE',
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: '#FF536DFE',
                 end: '#FF3D5AFE',
-              }),
+              },
               likeCountWidgetBuilder: this.buildLikeCountWidget1,
             }
           )
@@ -236,14 +237,14 @@ struct Index {
             {
               likeCount: 888,
               likeWidgetBuilder: this.buildLikeWidget7,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: '#FFFB8C00',
                 dotSecondaryColor: '#FFFFCC80',
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: '#FFFFCC80',
                 end: '#FFFFA726',
-              }),
+              },
               likeCountAnimationType: LikeCountAnimationType.all,
             }
           )
@@ -254,14 +255,14 @@ struct Index {
             {
               likeCount: 999,
               likeWidgetBuilder: this.buildLikeWidget8,
-              bubblesColor: new BubblesColor({
+              bubblesColor: {
                 dotPrimaryColor: '#FF00796B',
                 dotSecondaryColor: '#FF004D40',
-              },),
-              circleColor: new CircleColor({
+              },
+              circleColor: {
                 start: '#FF26A69A',
                 end: '#FFB2DFDB',
-              }),
+              },
               likeCountWidgetBuilder: this.buildLikeCountWidget2,
             }
           )

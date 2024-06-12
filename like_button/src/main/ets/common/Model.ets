@@ -10,35 +10,15 @@ export enum LikeCountAnimationType {
 }
 
 
-export class BubblesColor {
-  constructor(value: {
-    dotPrimaryColor: ResourceColor | DartColor,
-    dotSecondaryColor: ResourceColor | DartColor,
-    dotThirdColor?: ResourceColor | DartColor,
-    dotLastColor?: ResourceColor | DartColor,
-  }) {
-    this.dotPrimaryColor = value.dotPrimaryColor;
-    this.dotSecondaryColor = value.dotSecondaryColor;
-    this.dotThirdColor = value.dotThirdColor == undefined ? value.dotPrimaryColor : value.dotThirdColor;
-    this.dotLastColor = value.dotLastColor == undefined ? value.dotSecondaryColor : value.dotLastColor;
-  }
-
+export interface BubblesColor {
   dotPrimaryColor: ResourceColor | DartColor;
   dotSecondaryColor: ResourceColor | DartColor;
-  dotThirdColor: ResourceColor | DartColor;
-  dotLastColor: ResourceColor | DartColor;
+  dotThirdColor?: ResourceColor | DartColor | null;
+  dotLastColor?: ResourceColor | DartColor | null;
 }
 
 
-export class CircleColor {
-  constructor(value: {
-    start: ResourceColor | DartColor,
-    end: ResourceColor | DartColor,
-  }) {
-    this.start = value.start;
-    this.end = value.end;
-  }
-
+export interface CircleColor {
   start: ResourceColor | DartColor;
   end: ResourceColor | DartColor;
 }

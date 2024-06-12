@@ -12,7 +12,7 @@
   "description": "Like Button 支持推特点赞效果和点赞数量动画的 ArkUI 库.",
   "main": "Index.ets",
   "repository": "https://github.com/HarmonyCandies/like_button",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/HarmonyCandies/like_button",
   "dependencies": {}
 }

@@ -7,7 +7,7 @@ import like_button from '../common/Controller';
 
 @Component
 export struct LikeButton {
-  controller: like_button.Controller = undefined;
+  controller: like_button.Controller | undefined = undefined;
   @BuilderParam
   likeWidgetBuilder?: ($$: LikeWidgetBuilderParam) => void = this.buildLikeWidget;
   @BuilderParam
@@ -19,24 +19,24 @@ export struct LikeButton {
   /// size of like widget
   @Prop likeWidgetSize: number = 30;
   /// total size of bubbles
-  @Prop bubblesSize: number = undefined;
+  @Prop bubblesSize: number | undefined = undefined;
   /// colors of bubbles
-  @Prop bubblesColor: BubblesColor = new BubblesColor({
+  @Prop bubblesColor: BubblesColor = {
     dotPrimaryColor: '#FFFFC107',
     dotSecondaryColor: '#FFFF9800',
     dotThirdColor: '#FFFF5722',
     dotLastColor: '#FFF44336',
-  });
+  };
   /// size of circle
-  @Prop circleSize: number = undefined;
+  @Prop circleSize: number | undefined = undefined;
   /// colors of circle
-  @Prop circleColor: CircleColor = new CircleColor({ start: '#FFFF5722', end: '#FFFFC107', });
+  @Prop circleColor: CircleColor = { start: '#FFFF5722', end: '#FFFFC107', };
   /// whether it is liked
   @Prop isLiked: boolean = false;
   /// animation duration to change isLiked state
   @Prop animationDuration: number = 1000;
   /// like count
-  @Prop likeCount: number = undefined;
+  @Prop likeCount: number | undefined = undefined;
   /// The FlexOptions of LikeWidget and LikeCountWidget
   @Prop flexOptions: FlexOptions = {
     direction: FlexDirection.Row,
@@ -120,13 +120,14 @@ export struct LikeButton {
       alignContent: Alignment.TopStart
     }) {
       BubblesPainter(
-        { bubblesSize: this.bubblesSize,
+        {
+          bubblesSize: this.bubblesSize,
           bubblesColor: this.bubblesColor,
           currentProgress: this._bubblesProgress,
         }
       ).position({
-        x: -(this.bubblesSize - this.likeWidgetSize) / 2.0,
-        y: -(this.bubblesSize - this.likeWidgetSize) / 2.0,
+        x: -(this.bubblesSize! - this.likeWidgetSize) / 2.0,
+        y: -(this.bubblesSize! - this.likeWidgetSize) / 2.0,
       })
       CirclePainter(
         {
@@ -136,11 +137,17 @@ export struct LikeButton {
           outerCircleRadiusProgress: this._outerCircleRadiusProgress,
         }
       ).position({
-        x: -(this.circleSize - this.likeWidgetSize) / 2.0,
-        y: -(this.circleSize - this.likeWidgetSize) / 2.0,
+        x: -(this.circleSize! - this.likeWidgetSize) / 2.0,
+        y: -(this.circleSize! - this.likeWidgetSize) / 2.0,
       })
       Column() {
-        this.likeWidgetBuilder({ isLiked: this.isLiked })
+        if (this.likeWidgetBuilder != undefined) {
+          this.likeWidgetBuilder(
+            {
+              isLiked: this.isLiked,
+            }
+          )
+        }
       }.scale({
         x: this.isLiked ? this._iconScale : 1.0,
         y: this.isLiked ? this._iconScale : 1.0,
@@ -157,94 +164,109 @@ export struct LikeButton {
   buildCountComponent() {
     if (this.likeCountAnimationType == LikeCountAnimationType.none
       || this.likeCount == this._preLikeCount
-    )
-      this.likeCountWidgetBuilder({
-        isLiked: this.isLiked,
-        likeCount: this.likeCount,
-        showText: this.likeCount.toString(),
-      })
-    else if (this.likeCountAnimationType == LikeCountAnimationType.part
+    ) {
+      if (this.likeCountWidgetBuilder != undefined) {
+        this.likeCountWidgetBuilder({
+          isLiked: this.isLiked,
+          likeCount: this.likeCount!,
+          showText: this.likeCount!.toString(),
+        })
+      }
+    } else if (this.likeCountAnimationType == LikeCountAnimationType.part
       && this._samePartOfLikeCount != ''
-    )
-    Row() {
-      // same
-      Stack() {
+    ) {
+      Row() {
+        // same
+        Stack() {
 
+          // pre
+          Column() {
+            if (this.likeCountWidgetBuilder != undefined) {
+              this.likeCountWidgetBuilder({
+                isLiked: !this.isLiked,
+                likeCount: this._preLikeCount,
+                showText: this._samePartOfLikeCount,
+              })
+            }
+          }.opacity(1 - this._likeCountOpacity)
+
+          // current
+          Column() {
+            if (this.likeCountWidgetBuilder != undefined) {
+              this.likeCountWidgetBuilder({
+                isLiked: this.isLiked,
+                likeCount: this.likeCount!,
+                showText: this._samePartOfLikeCount,
+              })
+            }
+          }.opacity(this._likeCountOpacity)
+        }
+
+        // diff
+        Stack() {
+          Column() {
+            if (this.likeCountWidgetBuilder != undefined) {
+              this.likeCountWidgetBuilder({
+                isLiked: !this.isLiked,
+                likeCount: this._preLikeCount,
+                showText: this._preDifPartOfLikeCount,
+              })
+            }
+          }.opacity(1 - this._likeCountOpacity).onAreaChange((_, b) => {
+            this._preLikeCountHeight = b.height as number;
+          }).position({
+            y: this._preLikeCountHeight * (this.isLiked ? -this._likeCountOffset : this._likeCountOffset)
+          })
+
+          Column() {
+            if (this.likeCountWidgetBuilder != undefined) {
+              this.likeCountWidgetBuilder({
+                isLiked: this.isLiked,
+                likeCount: this.likeCount!,
+                showText: this._difPartOfLikeCount,
+              })
+            }
+          }.opacity(this._likeCountOpacity).onAreaChange((_, b) => {
+            this._likeCountHeight = b.height as number;
+          }).position({
+            y: this._likeCountHeight * (this.isLiked ? 1 - this._likeCountOffset : this._likeCountOffset - 1)
+          })
+        }
+      }.justifyContent(FlexAlign.Center)
+    } else {
+      Stack() {
         // pre
         Column() {
-          this.likeCountWidgetBuilder({
-            isLiked: !this.isLiked,
-            likeCount: this._preLikeCount,
-            showText: this._samePartOfLikeCount,
-          })
+          if (this.likeCountWidgetBuilder != undefined) {
+            this.likeCountWidgetBuilder({
+              isLiked: !this.isLiked,
+              likeCount: this._preLikeCount,
+              showText: this._preLikeCount.toString(),
+            })
+          }
         }.opacity(1 - this._likeCountOpacity)
-
-        // current
-        Column() {
-          this.likeCountWidgetBuilder({
-            isLiked: this.isLiked,
-            likeCount: this.likeCount,
-            showText: this._samePartOfLikeCount,
-          })
-        }.opacity(this._likeCountOpacity)
-      }
-
-      // diff
-      Stack() {
-        Column() {
-          this.likeCountWidgetBuilder({
-            isLiked: !this.isLiked,
-            likeCount: this._preLikeCount,
-            showText: this._preDifPartOfLikeCount,
-          })
-        }.opacity(1 - this._likeCountOpacity).onAreaChange((_, b) => {
+        .onAreaChange((_, b) => {
           this._preLikeCountHeight = b.height as number;
-        }).position({
+        })
+        .position({
           y: this._preLikeCountHeight * (this.isLiked ? -this._likeCountOffset : this._likeCountOffset)
         })
 
+        // current
         Column() {
-          this.likeCountWidgetBuilder({
-            isLiked: this.isLiked,
-            likeCount: this.likeCount,
-            showText: this._difPartOfLikeCount,
-          })
+          if (this.likeCountWidgetBuilder != undefined) {
+            this.likeCountWidgetBuilder({
+              isLiked: this.isLiked,
+              likeCount: this.likeCount!,
+              showText: this.likeCount!.toString(),
+            })
+          }
         }.opacity(this._likeCountOpacity).onAreaChange((_, b) => {
           this._likeCountHeight = b.height as number;
         }).position({
           y: this._likeCountHeight * (this.isLiked ? 1 - this._likeCountOffset : this._likeCountOffset - 1)
         })
       }
-    }.justifyContent(FlexAlign.Center)
-    else
-    Stack() {
-      // pre
-      Column() {
-        this.likeCountWidgetBuilder({
-          isLiked: !this.isLiked,
-          likeCount: this._preLikeCount,
-          showText: this._preLikeCount.toString(),
-        })
-      }.opacity(1 - this._likeCountOpacity)
-      .onAreaChange((_, b) => {
-        this._preLikeCountHeight = b.height as number;
-      })
-      .position({
-        y: this._preLikeCountHeight * (this.isLiked ? -this._likeCountOffset : this._likeCountOffset)
-      })
-
-      // current
-      Column() {
-        this.likeCountWidgetBuilder({
-          isLiked: this.isLiked,
-          likeCount: this.likeCount,
-          showText: this.likeCount.toString(),
-        })
-      }.opacity(this._likeCountOpacity).onAreaChange((_, b) => {
-        this._likeCountHeight = b.height as number;
-      }).position({
-        y: this._likeCountHeight * (this.isLiked ? 1 - this._likeCountOffset : this._likeCountOffset - 1)
-      })
     }
   }
 
@@ -253,15 +275,18 @@ export struct LikeButton {
       this.flexOptions,
     ) {
       this.buildLikeComponent()
-      if (this.likeCount != undefined)
-      Column() {
-        this.buildCountComponent()
-      }.clip(true).margin({
-        left: this.flexOptions.direction == FlexDirection.Row ? this.widgetsMargin : 0,
-        right: this.flexOptions.direction == FlexDirection.RowReverse ? this.widgetsMargin : 0,
-        top: this.flexOptions.direction == FlexDirection.Column ? this.widgetsMargin : 0,
-        bottom: this.flexOptions.direction == FlexDirection.ColumnReverse ? this.widgetsMargin : 0,
-      })
+      if (
+        this.likeCount != undefined
+      ) {
+        Column() {
+          this.buildCountComponent()
+        }.clip(true).margin({
+          left: this.flexOptions.direction == FlexDirection.Row ? this.widgetsMargin : 0,
+          right: this.flexOptions.direction == FlexDirection.RowReverse ? this.widgetsMargin : 0,
+          top: this.flexOptions.direction == FlexDirection.Column ? this.widgetsMargin : 0,
+          bottom: this.flexOptions.direction == FlexDirection.ColumnReverse ? this.widgetsMargin : 0,
+        })
+      }
     }.onClick((_) => {
       this.Tap();
     })
@@ -275,7 +300,7 @@ export struct LikeButton {
   @State _iconScale: number = 0;
   @State _likeCountOpacity: number = 0;
 
-  initAnimation() {
+  initAnimation(): AnimatorResult {
     let options: AnimatorOptions = {
       duration: this.animationDuration,
       easing: "ease",
@@ -302,6 +327,7 @@ export struct LikeButton {
     this._animatorResult.onfinish = () => {
       this._animatorResult = undefined;
     }
+    return this._animatorResult;
   }
 
   public isAnimating(): boolean {
@@ -312,8 +338,7 @@ export struct LikeButton {
     if (this._animatorResult != undefined) {
       return;
     }
-    this.initAnimation();
-    this._animatorResult.play();
+    this.initAnimation().play();
   }
 
   dispose() {
@@ -347,7 +372,7 @@ export struct LikeButton {
     });
   }
 
-  initLikeCountAnimation() {
+  initLikeCountAnimation(): AnimatorResult {
     let options: AnimatorOptions = {
       duration: this.likeCountAnimationDuration,
       easing: "ease",
@@ -366,25 +391,25 @@ export struct LikeButton {
     this._likeCountAnimatorResult.onfinish = () => {
       this._likeCountAnimatorResult = undefined;
     };
+
+    return this._likeCountAnimatorResult;
   }
 
   playLikeCountAnimation() {
     if (this._likeCountAnimatorResult != undefined) {
       return;
     }
-    this.initLikeCountAnimation()
-    this._likeCountAnimatorResult.play();
+    this.initLikeCountAnimation().play();
   }
 
   handleLikeCount() {
     let preLikeCount = this._preLikeCount.toString();
-    let likeCount = this.likeCount.toString();
+    let likeCount = this.likeCount!.toString();
     if (preLikeCount.length != likeCount.length) {
       this._samePartOfLikeCount = '';
       this._preDifPartOfLikeCount = preLikeCount;
       this._difPartOfLikeCount = likeCount;
-    }
-    else {
+    } else {
       for (let index = 0; index < likeCount.length; index++) {
         if (preLikeCount[index] != likeCount[index]) {
           this._samePartOfLikeCount = likeCount.substring(0, index);
@@ -397,12 +422,12 @@ export struct LikeButton {
   }
 }
 
-export class LikeCountWidgetBuilderParam {
+export interface LikeCountWidgetBuilderParam {
   isLiked: boolean;
   likeCount: number;
   showText: string;
 }
 
-export class LikeWidgetBuilderParam {
+export interface LikeWidgetBuilderParam {
   isLiked: boolean;
 }

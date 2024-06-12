@@ -5,8 +5,7 @@ import { DartColor } from '../common/Color';
 @Component
 export struct BubblesPainter {
   @Prop @Watch('onCurrentProgressChanged') currentProgress: number;
-  @Prop  bubblesColor: BubblesColor;
-
+  @Prop bubblesColor: BubblesColor;
   @Prop bubblesSize: number;
   bubblesCount: number = 7;
   private settings: RenderingContextSettings = new RenderingContextSettings(true)
@@ -32,9 +31,9 @@ export struct BubblesPainter {
     this._outerBubblesPositionAngle = 360 / this.bubblesCount;
     this._circlePaintColors.push(...[
       this.bubblesColor.dotPrimaryColor as string,
-      this.bubblesColor.dotSecondaryColor  as string,
-      this.bubblesColor.dotThirdColor  as string,
-      this.bubblesColor.dotLastColor  as string,],
+      this.bubblesColor.dotSecondaryColor as string,
+      (this.bubblesColor.dotThirdColor ?? this.bubblesColor.dotPrimaryColor) as string,
+      (this.bubblesColor.dotLastColor ?? this.bubblesColor.dotSecondaryColor) as string,],
     );
     this.init();
   }
@@ -106,40 +105,50 @@ export struct BubblesPainter {
   _updateBubblesPaints() {
     let progress = clamp(this.currentProgress, 0.6, 1.0);
     let alpha =
-    parseInt(mapValueFromRangeToRange(progress, 0.6, 1.0, 255.0, 0.0).toString());
+      parseInt(mapValueFromRangeToRange(progress, 0.6, 1.0, 255.0, 0.0).toString());
     if (this.currentProgress < 0.5) {
       let progress =
-      mapValueFromRangeToRange(this.currentProgress, 0.0, 0.5, 0.0, 1.0);
+        mapValueFromRangeToRange(this.currentProgress, 0.0, 0.5, 0.0, 1.0);
 
 
-      this._circlePaintColors[0] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotSecondaryColor ), progress)
+      this._circlePaintColors[0] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor,),
+        DartColor.fromResourceColor(this.bubblesColor.dotSecondaryColor), progress)!
         .withAlpha(alpha)
         .toString();
 
-      this._circlePaintColors[1] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ), progress)
+      this._circlePaintColors[1] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor,),
+        DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ?? this.bubblesColor.dotPrimaryColor), progress)!
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[2] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ,), DartColor.fromResourceColor(this.bubblesColor.dotLastColor ), progress)
+      this._circlePaintColors[2] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ??
+      this.bubblesColor.dotPrimaryColor),
+        DartColor.fromResourceColor(this.bubblesColor.dotLastColor ?? this.bubblesColor.dotSecondaryColor), progress)!
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[3] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotLastColor ,), DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ), progress)
+      this._circlePaintColors[3] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotLastColor ??
+      this.bubblesColor.dotSecondaryColor),
+        DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor), progress)!
         .withAlpha(alpha)
         .toString();
-    }
-
-    else {
+    } else {
       let progress =
-      mapValueFromRangeToRange(this.currentProgress, 0.5, 1.0, 0.0, 1.0);
-      this._circlePaintColors[0] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ), progress)
+        mapValueFromRangeToRange(this.currentProgress, 0.5, 1.0, 0.0, 1.0);
+      this._circlePaintColors[0] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor,),
+        DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ?? this.bubblesColor.dotPrimaryColor), progress)!
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[1] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotThirdColor,), DartColor.fromResourceColor(this.bubblesColor.dotLastColor ), progress)
+      this._circlePaintColors[1] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotThirdColor ??
+      this.bubblesColor.dotPrimaryColor),
+        DartColor.fromResourceColor(this.bubblesColor.dotLastColor ?? this.bubblesColor.dotSecondaryColor), progress)!
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[2] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotLastColor ,), DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ), progress)
+      this._circlePaintColors[2] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotLastColor ??
+      this.bubblesColor.dotSecondaryColor),
+        DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor), progress)!
         .withAlpha(alpha)
         .toString();
-      this._circlePaintColors[3] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor ,), DartColor.fromResourceColor(this.bubblesColor.dotSecondaryColor ), progress)
+      this._circlePaintColors[3] = DartColor.lerp(DartColor.fromResourceColor(this.bubblesColor.dotPrimaryColor,),
+        DartColor.fromResourceColor(this.bubblesColor.dotSecondaryColor), progress)!
         .withAlpha(alpha)
         .toString();
 

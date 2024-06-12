@@ -5,13 +5,13 @@ import { Cubic, DecelerateCurve, Interval, OvershootCurve } from './Curve';
 
 namespace like_button {
   export class Controller {
-    onTap: () => void;
+    onTap?: () => void | undefined = undefined;
 
     Tap() {
       if (this.onTap != undefined) {
         this.onTap();
       }
-    }   
+    }
   }
 }
 
