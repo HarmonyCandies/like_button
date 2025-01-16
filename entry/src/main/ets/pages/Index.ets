@@ -110,6 +110,7 @@ struct Index {
             }
           )
         }
+
         GridItem() {
           LikeButton(
             {
@@ -133,6 +134,7 @@ struct Index {
         GridItem() {
           LikeButton(
             {
+              isLiked: true,
               likeCount: 888,
               likeWidgetBuilder: this.buildLikeWidget2,
               bubblesColor: {

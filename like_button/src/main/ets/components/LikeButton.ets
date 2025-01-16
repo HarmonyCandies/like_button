@@ -297,7 +297,7 @@ export struct LikeButton {
   @State _outerCircleRadiusProgress: number = 0;
   @State _innerCircleRadiusProgress: number = 0;
   @State _bubblesProgress: number = 0;
-  @State _iconScale: number = 0;
+  @State _iconScale: number = 1;
   @State _likeCountOpacity: number = 0;
 
   initAnimation(): AnimatorResult {
